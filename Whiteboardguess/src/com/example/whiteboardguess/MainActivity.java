@@ -3,7 +3,7 @@ package com.example.whiteboardguess;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
-//main activity
+
 public class MainActivity extends Activity {
 
     @Override
