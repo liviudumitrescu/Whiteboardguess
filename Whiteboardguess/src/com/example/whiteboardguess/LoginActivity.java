@@ -51,7 +51,7 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		Parse.initialize(this, "QYICyROlUSFqB5OhHaMAz6VHqqQOyhcREKXM0G1N", "nOLjQFioC1rVPoHM9scFRgYD1kfUeSm2O0oiu59c");
 		currentUser = ParseUser.getCurrentUser();
-		intent = new Intent(LoginActivity.this, MainActivity.class);
+		intent = new Intent(LoginActivity.this, GameLobby.class);
 		if (currentUser != null) {
 			startActivity(intent);
 		} else {
