@@ -8,7 +8,10 @@ import android.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.graphics.*;
-
+import com.parse.Parse;
+import com.parse.ParseAnalytics;
+import com.parse.ParseInstallation;
+import com.parse.PushService;
 
 
 public class MainActivity extends Activity implements ColorPickerDialog.OnColorChangedListener {
@@ -19,7 +22,9 @@ public class MainActivity extends Activity implements ColorPickerDialog.OnColorC
 	private Paint   mPaint;
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {		
+	protected void onCreate(Bundle savedInstanceState) {
+		
+		PushService.setDefaultPushCallback(MainActivity.this, MainActivity.class);
 		mPaint = new Paint();
 		mPaint.setAntiAlias(true);
 		mPaint.setDither(true);

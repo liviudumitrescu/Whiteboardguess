@@ -5,7 +5,10 @@ import android.content.Context;
 import android.graphics.*;
 import android.view.*;
 import android.widget.*;
-
+import com.parse.Parse;
+import com.parse.ParseAnalytics;
+import com.parse.ParseInstallation;
+import com.parse.PushService;
 
 public class DrawView extends View {
 	

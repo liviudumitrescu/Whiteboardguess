@@ -49,7 +49,7 @@ public class LoginActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Parse.initialize(this, "QYICyROlUSFqB5OhHaMAz6VHqqQOyhcREKXM0G1N", "nOLjQFioC1rVPoHM9scFRgYD1kfUeSm2O0oiu59c");
+		
 		currentUser = ParseUser.getCurrentUser();
 		intent = new Intent(LoginActivity.this, GameLobby.class);
 		if (currentUser != null) {
@@ -238,16 +238,21 @@ public class LoginActivity extends Activity {
 			if (success) {
 				startActivity(intent);
 			} else {
-				mPasswordView
-						.setError(errormsg);
+				mPasswordView.setError(errormsg);
 				mPasswordView.requestFocus();
 			}
 		}
-
+		
+		
 		@Override
 		protected void onCancelled() {
 			mAuthTask = null;
 			showProgress(false);
 		}
+	}
+	
+	@Override
+	public void onBackPressed() {
+	    moveTaskToBack(true);
 	}
 }
