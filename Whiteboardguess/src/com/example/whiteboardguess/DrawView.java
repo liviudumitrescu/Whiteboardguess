@@ -14,7 +14,7 @@ public class DrawView extends View {
 	
 	LinearLayout layout;
 
-	TextView textView;
+	
 
 	private Bitmap  mBitmap;
 	private Canvas  mCanvas;

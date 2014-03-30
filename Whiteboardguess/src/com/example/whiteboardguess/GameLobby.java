@@ -34,6 +34,7 @@ public class GameLobby extends Activity {
 		installation.put("user",ParseUser.getCurrentUser());
 		installation.put("gamestatus", "new");
 		installation.saveInBackground();
+	
 	}
 
 	@Override
@@ -66,14 +67,11 @@ public class GameLobby extends Activity {
 	public void waitPlayer() {
 		if (mWaitPlayerTask != null) {
 			return;
-		}
-		
+		}	
 		mStatusMessageView.setText(R.string.string_waitplayer);
 		showProgress(true);
 		mWaitPlayerTask = new WaitPlayerTask();
 		mWaitPlayerTask.execute((Void) null);
-		
-		
 	}
 	
 	private void showProgress(final boolean show) {
@@ -119,8 +117,14 @@ public class GameLobby extends Activity {
 
 		@Override
 		protected Boolean doInBackground(Void... arg0) {
-			// TODO Auto-generated method stub
-			return null;
+			
+		//wait push notification
+			
+			return true;
+			
+			
+			
+			
 		}
 		
 		@Override
