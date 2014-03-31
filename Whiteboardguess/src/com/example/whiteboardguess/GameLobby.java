@@ -1,8 +1,14 @@
 package com.example.whiteboardguess;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.example.whiteboardguess.LoginActivity.UserLoginTask;
 import com.parse.ParseInstallation;
+import com.parse.ParsePush;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.PushService;
 
 import android.os.AsyncTask;
 import android.os.Build;
@@ -22,6 +28,8 @@ public class GameLobby extends Activity {
 	private View mStatusView;
 	private TextView mStatusMessageView;
 	private View mFormView;
+	ParsePush push; 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,6 +43,8 @@ public class GameLobby extends Activity {
 		installation.put("gamestatus", "new");
 		installation.saveInBackground();
 	
+		
+		
 	}
 
 	@Override
@@ -61,6 +71,58 @@ public class GameLobby extends Activity {
 	}
 	public void FindGame_click(View view)
 	{
+		/*
+				JSONObject data = new JSONObject();
+				
+				try {
+					data.put("action", "com.example.UPDATE_STATUS");
+				} catch (JSONException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				try {
+					data.put("name", ParseUser.getCurrentUser());
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+				// Create our Installation query
+				ParseQuery<ParseInstallation> pushQuery = ParseInstallation.getQuery();
+				pushQuery.whereEqualTo("status", "new"); // Set the channel
+				
+				
+                push = new ParsePush();
+                push.setQuery(pushQuery);
+                //push.setData(data);
+                push.setMessage("Giants scored against the A's! It's now 2-2.");
+                push.sendInBackground();
+                */
+		
+		
+		JSONObject obj;
+		try {
+			obj =new JSONObject();
+			obj.put("alert","erwerwe");
+			obj.put("action","com.examples.UPDATE_STATUS");
+			obj.put("customdata","My string");
+			
+			ParsePush push = new ParsePush();
+			ParseQuery query = ParseInstallation.getQuery();
+			
+			 
+			// Notification for Android users
+			query.whereEqualTo("deviceType", "android");
+			push.setQuery(query);
+			push.setData(obj);
+			push.sendInBackground(); 
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 	}
 	
