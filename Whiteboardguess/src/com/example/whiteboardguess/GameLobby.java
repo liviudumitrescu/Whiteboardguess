@@ -41,6 +41,7 @@ public class GameLobby extends Activity {
 		installation = ParseInstallation.getCurrentInstallation();
 		installation.put("user",ParseUser.getCurrentUser());
 		installation.put("gamestatus", "new");
+		PushService.setDefaultPushCallback(this, MainActivity.class);
 		installation.saveInBackground();
 	
 		
