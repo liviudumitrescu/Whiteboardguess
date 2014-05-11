@@ -1,8 +1,7 @@
 package com.example.whiteboardguess;
 
 import com.parse.Parse;
-import com.parse.ParseInstallation;
-import com.parse.PushService;
+
 
 import android.app.Application;
 

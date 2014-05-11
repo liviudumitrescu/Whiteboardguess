@@ -1,9 +1,13 @@
 package com.example.whiteboardguess;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 
 public class FndGameActivity extends Activity {
@@ -12,6 +16,13 @@ public class FndGameActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_fnd_game);
+		
+		ParseDB parseDB = new ParseDB();
+		ListView waitingGamers = (ListView)findViewById(R.id.activeGamesList);
+		List<String> waitingPlayers = parseDB.getWaitingGames();
+		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, waitingPlayers);
+		waitingGamers.setAdapter(adapter);
+		
 		
 	}
 

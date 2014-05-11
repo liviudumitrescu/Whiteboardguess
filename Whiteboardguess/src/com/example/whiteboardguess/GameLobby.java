@@ -1,13 +1,11 @@
 package com.example.whiteboardguess;
 
-import java.util.Iterator;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.parse.ParseInstallation;
+import com.parse.ParseObject;
 import com.parse.ParsePush;
-import com.parse.ParseQuery;
+
 import com.parse.ParseUser;
 import com.parse.PushService;
 
@@ -31,8 +29,9 @@ import android.widget.TextView;
 	private TextView mStatusMessageView;
 	private View mFormView;
 	ParsePush push;
+	ParseObject Games;
+	ParseDB parseDB;
 	
-	private GameLobby() {}
 	
 	private static GameLobby _gameLobby;
 	
@@ -56,11 +55,27 @@ import android.widget.TextView;
 		mStatusMessageView = (TextView) findViewById(R.id.login_status_message);
 		installation = ParseInstallation.getCurrentInstallation();
 		installation.put("user",ParseUser.getCurrentUser());
-		installation.put("gamestatus", "new");
 		PushService.setDefaultPushCallback(this, MainActivity.class);
 		installation.saveInBackground();
-	
+		parseDB = new ParseDB();
 		
+		
+		Games = parseDB.getGame(installation);
+		
+		if (Games != null)
+		{
+			Games.put("Status", "New");
+			Games.put("Installation", installation);
+			Games.saveInBackground();
+		}
+		else
+		{
+			Games = new ParseObject("Games");
+			Games.put("Player",ParseUser.getCurrentUser());
+			Games.put("Status", "New");
+			Games.put("Installation", installation);
+			Games.saveInBackground();
+		}
 		
 	}
 
@@ -78,8 +93,7 @@ import android.widget.TextView;
 	}
 	public void CreateGame_click(View view)
 	{
-		installation.put("gamestatus", "waiting");
-		installation.saveInBackground();
+		Games.put("Status", "Waiting");
 		waitPlayer();
 		
 		
@@ -90,7 +104,7 @@ import android.widget.TextView;
 	public void FindGame_click(View view)
 	{
 		Intent Fndintent = new Intent(GameLobby.this, FndGameActivity.class);
-		
+		startActivity(Fndintent);
 		
 		
 		/*
