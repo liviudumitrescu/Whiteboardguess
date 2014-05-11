@@ -1,9 +1,10 @@
 package com.example.whiteboardguess;
 
+import java.util.Iterator;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.example.whiteboardguess.LoginActivity.UserLoginTask;
 import com.parse.ParseInstallation;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
@@ -15,20 +16,35 @@ import android.os.Build;
 import android.os.Bundle;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
-public class GameLobby extends Activity {
+    public class GameLobby extends Activity {
 	private Intent intent;
 	private ParseInstallation installation;
 	private WaitPlayerTask mWaitPlayerTask = null;
 	private View mStatusView;
 	private TextView mStatusMessageView;
 	private View mFormView;
-	ParsePush push; 
+	ParsePush push;
+	
+	private GameLobby() {}
+	
+	private static GameLobby _gameLobby;
+	
+	 public static GameLobby getSharedApplication() 
+	    {
+	        if (_gameLobby == null)
+	        	_gameLobby = new GameLobby();
+	        return _gameLobby;
+	    }
+	
+	
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +70,7 @@ public class GameLobby extends Activity {
 		getMenuInflater().inflate(R.menu.game_lobby, menu);
 		return true;
 	}
+	
 	public void Logout_click(View view)
 	{ 	
 		ParseUser.logOut();
@@ -72,37 +89,11 @@ public class GameLobby extends Activity {
 	}
 	public void FindGame_click(View view)
 	{
+		Intent Fndintent = new Intent(GameLobby.this, FndGameActivity.class);
+		
+		
+		
 		/*
-				JSONObject data = new JSONObject();
-				
-				try {
-					data.put("action", "com.example.UPDATE_STATUS");
-				} catch (JSONException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-				try {
-					data.put("name", ParseUser.getCurrentUser());
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				
-				// Create our Installation query
-				ParseQuery<ParseInstallation> pushQuery = ParseInstallation.getQuery();
-				pushQuery.whereEqualTo("status", "new"); // Set the channel
-				
-				
-                push = new ParsePush();
-                push.setQuery(pushQuery);
-                //push.setData(data);
-                push.setMessage("Giants scored against the A's! It's now 2-2.");
-                push.sendInBackground();
-                */
-		
-		
 		JSONObject obj;
 		try {
 			obj =new JSONObject();
@@ -111,7 +102,7 @@ public class GameLobby extends Activity {
 			obj.put("customdata","My string");
 			
 			ParsePush push = new ParsePush();
-			ParseQuery query = ParseInstallation.getQuery();
+			ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
 			
 			 
 			// Notification for Android users
@@ -120,10 +111,10 @@ public class GameLobby extends Activity {
 			push.setData(obj);
 			push.sendInBackground(); 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
-		
+		*/
 		
 	}
 	
@@ -137,7 +128,7 @@ public class GameLobby extends Activity {
 		mWaitPlayerTask.execute((Void) null);
 	}
 	
-	private void showProgress(final boolean show) {
+	@SuppressLint("NewApi") private void showProgress(final boolean show) {
 		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
 		// for very easy animations. If available, use these APIs to fade-in
 		// the progress spinner.
@@ -210,5 +201,4 @@ public class GameLobby extends Activity {
 		}
 		
 	}
-
 }

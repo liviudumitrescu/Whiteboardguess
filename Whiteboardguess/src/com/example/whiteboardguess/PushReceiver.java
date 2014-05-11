@@ -10,9 +10,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+
 public class PushReceiver extends BroadcastReceiver {
-private static final String TAG = "PushReceiver";
- 
+	private static final String TAG = "PushReceiver";
+	GameLobby gL = GameLobby.getSharedApplication();
+	
   @Override
   public void onReceive(Context context, Intent intent) {
     try {
@@ -31,3 +33,4 @@ private static final String TAG = "PushReceiver";
     }
   }
 }
+
