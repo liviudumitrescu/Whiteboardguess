@@ -22,7 +22,8 @@ import android.view.View;
 import android.widget.TextView;
 
     public class GameLobby extends Activity {
-	private Intent intent;
+	
+    private Intent intent;
 	private ParseInstallation installation;
 	private WaitPlayerTask mWaitPlayerTask = null;
 	private View mStatusView;
@@ -31,9 +32,9 @@ import android.widget.TextView;
 	ParsePush push;
 	ParseObject Games;
 	ParseDB parseDB;
+	private Object mWaitPlayers;
 	
-	
-	private static GameLobby _gameLobby;
+	 private static GameLobby _gameLobby;
 	
 	 public static GameLobby getSharedApplication() 
 	    {
@@ -58,7 +59,8 @@ import android.widget.TextView;
 		PushService.setDefaultPushCallback(this, MainActivity.class);
 		installation.saveInBackground();
 		parseDB = new ParseDB();
-		
+		_gameLobby = this;
+		mWaitPlayers = true;
 		
 		Games = parseDB.getGame(installation);
 		
@@ -123,7 +125,7 @@ import android.widget.TextView;
 			query.whereEqualTo("deviceType", "android");
 			push.setQuery(query);
 			push.setData(obj);
-			push.sendInBackground(); 
+			push.sendInBackground();  
 		} catch (JSONException e) {
 			
 			e.printStackTrace();
@@ -184,9 +186,15 @@ import android.widget.TextView;
 	public class WaitPlayerTask extends AsyncTask<Void, Void, Boolean> {
 
 		@Override
-		protected Boolean doInBackground(Void... arg0) {
-			
-		//wait push notification
+		protected Boolean doInBackground(Void... arg0) {		
+			synchronized (mWaitPlayers) {
+				try {
+					mWaitPlayers.wait();
+				} catch (InterruptedException e) {	
+					e.printStackTrace();
+				}
+			   }
+		
 			
 			return true;
 			

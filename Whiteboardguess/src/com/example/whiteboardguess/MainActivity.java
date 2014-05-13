@@ -8,9 +8,6 @@ import android.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.graphics.*;
-import com.parse.Parse;
-import com.parse.ParseAnalytics;
-import com.parse.ParseInstallation;
 import com.parse.PushService;
 
 

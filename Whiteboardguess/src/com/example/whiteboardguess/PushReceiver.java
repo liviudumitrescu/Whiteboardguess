@@ -23,7 +23,7 @@ public class PushReceiver extends BroadcastReceiver {
       JSONObject json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
  
       Log.d(TAG, "got action " + action + " on channel " + channel + " with:");
-      Iterator itr = json.keys();
+      Iterator<?> itr = json.keys();
       while (itr.hasNext()) {
         String key = (String) itr.next();
         Log.d(TAG, "..." + key + " => " + json.getString(key));
