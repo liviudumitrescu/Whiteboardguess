@@ -32,7 +32,7 @@ import android.widget.TextView;
 	ParsePush push;
 	ParseObject Games;
 	ParseDB parseDB;
-	private Object mWaitPlayers;
+	public String mWaitPlayers;
 	
 	 private static GameLobby _gameLobby;
 	
@@ -60,7 +60,7 @@ import android.widget.TextView;
 		installation.saveInBackground();
 		parseDB = new ParseDB();
 		_gameLobby = this;
-		mWaitPlayers = true;
+		mWaitPlayers = "";
 		
 		Games = parseDB.getGame(installation);
 		
@@ -96,42 +96,13 @@ import android.widget.TextView;
 	public void CreateGame_click(View view)
 	{
 		Games.put("Status", "Waiting");
-		waitPlayer();
-		
-		
-		
-		//intent = new Intent(GameLobby.this, MainActivity.class);
-		//startActivity(intent);
+		Games.saveInBackground();
+		waitPlayer();	
 	}
 	public void FindGame_click(View view)
 	{
 		Intent Fndintent = new Intent(GameLobby.this, FndGameActivity.class);
 		startActivity(Fndintent);
-		
-		
-		/*
-		JSONObject obj;
-		try {
-			obj =new JSONObject();
-			obj.put("alert","erwerwe");
-			obj.put("action","com.examples.UPDATE_STATUS");
-			obj.put("customdata","My string");
-			
-			ParsePush push = new ParsePush();
-			ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
-			
-			 
-			// Notification for Android users
-			query.whereEqualTo("deviceType", "android");
-			push.setQuery(query);
-			push.setData(obj);
-			push.sendInBackground();  
-		} catch (JSONException e) {
-			
-			e.printStackTrace();
-		}
-		*/
-		
 	}
 	
 	public void waitPlayer() {
@@ -187,20 +158,28 @@ import android.widget.TextView;
 
 		@Override
 		protected Boolean doInBackground(Void... arg0) {		
-			synchronized (mWaitPlayers) {
-				try {
-					mWaitPlayers.wait();
-				} catch (InterruptedException e) {	
-					e.printStackTrace();
+			//synchronized (mWaitPlayers) {
+				//try {
+				//	mWaitPlayers.wait();
+				//} catch (Exception e) {	
+				//	e.printStackTrace();
+				//}
+				while (mWaitPlayers.equals(""))
+				{
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						
+						e.printStackTrace();
+					}
 				}
-			   }
-		
-			
-			return true;
-			
-			
-			
-			
+				if (Games != null)
+				{
+					Games.put("Status", mWaitPlayers);
+					Games.saveInBackground();
+				}
+			 
+			return true;	
 		}
 		
 		@Override
@@ -209,7 +188,8 @@ import android.widget.TextView;
 			showProgress(false);
 			
 			if (success) {
-				//TODO
+				intent = new Intent(GameLobby.this, MainActivity.class);
+				startActivity(intent);
 			} else {
 				//TODO
 			}
@@ -223,4 +203,4 @@ import android.widget.TextView;
 		}
 		
 	}
-}
+	}

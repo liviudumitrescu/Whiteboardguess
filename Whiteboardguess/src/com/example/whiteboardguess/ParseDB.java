@@ -7,12 +7,13 @@ import com.parse.*;
 public class ParseDB {
 	
 	private ParseObject gameObject;
+	private ParseUser pUser;
 	
-	public List<String> getWaitingGames() {
+	public Map<String,ParseUser> getWaitingGames() {
 		List<ParseObject> mScoreList = new ArrayList<ParseObject>();
-		List<String> mListView = new ArrayList<String>();
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Games");
-		query.whereEqualTo("Status", "New");
+		Map<String,ParseUser> map = new LinkedHashMap<String,ParseUser>();
+		query.whereEqualTo("Status", "Waiting");
 		try {
 			mScoreList = query.find();
 		} catch (ParseException e) {
@@ -29,9 +30,10 @@ public class ParseDB {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-            mListView.add(user.getUsername());
+            //mListView.add(user.getUsername());
+            map.put(user.getUsername(), user);    
     }	
-	return mListView;	
+	return map;	
 	}
 	
 	public ParseObject getGame(ParseInstallation installation) {
@@ -48,5 +50,22 @@ public class ParseDB {
     		gameObject = mScoreList.get(0);
 		      
 		return gameObject;
+	}
+	
+	
+	
+	public ParseUser getUser(String username){
+		ParseQuery<ParseUser> query = ParseUser.getQuery();
+		query.whereEqualTo("username", username);
+		List<ParseUser> mScoreList = new ArrayList<ParseUser>();
+		
+		try {
+			mScoreList = query.find();
+		} catch (ParseException e) {
+			
+			e.printStackTrace();
+		}
+		pUser = mScoreList.get(0);
+		return pUser;
 	}
 }

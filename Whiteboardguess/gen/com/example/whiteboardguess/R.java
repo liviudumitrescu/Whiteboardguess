@@ -31,14 +31,14 @@ public final class R {
     public static final class id {
         public static final int action_forgot_password=0x7f08000c;
         public static final int action_settings=0x7f08000b;
-        public static final int activeGamesList=0x7f080000;
+        public static final int activeGamesList=0x7f080003;
         public static final int creategameB=0x7f080004;
         public static final int email=0x7f080007;
         public static final int findgameB=0x7f080005;
         public static final int login=0x7f080009;
-        public static final int login_form=0x7f080003;
-        public static final int login_status=0x7f080001;
-        public static final int login_status_message=0x7f080002;
+        public static final int login_form=0x7f080002;
+        public static final int login_status=0x7f080000;
+        public static final int login_status_message=0x7f080001;
         public static final int logoutB=0x7f080006;
         public static final int password=0x7f080008;
         public static final int sign_in_button=0x7f08000a;

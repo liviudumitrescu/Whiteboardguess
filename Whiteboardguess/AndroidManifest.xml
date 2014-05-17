@@ -59,7 +59,7 @@
             android:label="@string/title_activity_wi_fi" >
         </activity>
 
-        <receiver android:name="com.example.whiteboardguess.GameLobby.PushReceiver" >
+        <receiver android:name="com.example.whiteboardguess.PushReceiver" >
             <intent-filter>
                 <action android:name="com.examples.UPDATE_STATUS" />
             </intent-filter>

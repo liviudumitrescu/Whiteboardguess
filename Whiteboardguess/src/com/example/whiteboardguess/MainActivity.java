@@ -1,6 +1,9 @@
 package com.example.whiteboardguess;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.os.Bundle;
 
 import android.app.Activity;
@@ -8,19 +11,45 @@ import android.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.graphics.*;
+
+import com.parse.ParseInstallation;
+import com.parse.ParseObject;
+import com.parse.ParsePush;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.parse.PushService;
 
 
 public class MainActivity extends Activity implements ColorPickerDialog.OnColorChangedListener {
-	DrawView dv ;   
+	public DrawView dv ;   
 	AlertDialog dialog;
 	private static final int COLOR_MENU_ID = Menu.FIRST;	
 	private static final int ERASE_MENU_ID = Menu.FIRST + 1;
 	private Paint   mPaint;
+	ParseObject games;
+	ParseDB parseDB;
+	public String gameStatus;
+	ParseInstallation installation;
+	public ParseUser user;
+	
+	
+	private static MainActivity _MainActivity;
+	
+	 public static MainActivity getSharedApplication() 
+	    {
+	        if (_MainActivity == null)
+	        	_MainActivity = new MainActivity();
+	        return _MainActivity;
+	    }
+	
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
+		parseDB = new ParseDB();
+		installation = ParseInstallation.getCurrentInstallation();
+		games = parseDB.getGame(installation);
+		gameStatus="";
 		PushService.setDefaultPushCallback(MainActivity.this, MainActivity.class);
 		mPaint = new Paint();
 		mPaint.setAntiAlias(true);
@@ -34,7 +63,40 @@ public class MainActivity extends Activity implements ColorPickerDialog.OnColorC
 	    dv = new DrawView(this, this.mPaint);
 	    dv.setDrawingCacheEnabled(true);
 	    setContentView(dv);
-	   
+	    _MainActivity = this;
+	    gameStatus = games.get("Status").toString();
+	    
+	    
+	    if (!gameStatus.equals("New"))
+	    {
+	    	user = parseDB.getUser(games.getString("Status"));   
+			JSONObject obj;
+			try {
+				obj =new JSONObject();
+				obj.put("action","com.examples.UPDATE_STATUS");
+				obj.put("gameAction","confirmGame");
+				obj.put("user", ParseUser.getCurrentUser().getUsername());
+	
+				ParsePush push = new ParsePush();
+				ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
+				
+				 
+				// Notification for Android users
+				query.whereEqualTo("user", user);
+				push.setQuery(query);
+				push.setData(obj);
+				push.sendInBackground();
+			} catch (JSONException e) {
+				
+				e.printStackTrace();
+			}
+	    }
+	    else
+	    {
+	    	games.put("Status", FndGameActivity.getSharedApplication().mWaitPlayers);
+	    	games.put("Installation", installation);
+	    	games.saveInBackground();
+		}
 	    
 	}
 	public void colorChanged(int color) {
