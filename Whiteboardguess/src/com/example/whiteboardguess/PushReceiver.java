@@ -63,7 +63,7 @@ public class PushReceiver extends BroadcastReceiver {
     	  {
     		    
 				MainActivity.getSharedApplication().dv.ShouldSendNot = 0;
-				MainActivity.getSharedApplication().dv.draw();
+				MainActivity.getSharedApplication().dv.drawJson(json.getInt("SessionId"));
 				
     	  }
     } catch (JSONException e) {

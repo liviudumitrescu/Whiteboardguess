@@ -2,6 +2,7 @@ package com.example.whiteboardguess;
 
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import java.util.List;
 import org.json.JSONObject;
@@ -32,8 +33,12 @@ public class DrawView extends View {
 	private Path    mPath;
 	private Paint   mBitmapPaint;
 	private Paint   mPaint;
+	private int width;
+	private int hight;
 	public int ShouldSendNot=1;
 	public int orderid=0;
+	private int SessionId;
+	Random randomGenerator;
 	Context context;
    
 	List<Float> arrx = new ArrayList<Float>();
@@ -43,13 +48,17 @@ public class DrawView extends View {
 	
 	
 	public DrawView(Context c, Paint mPaint) {
+		
 	super(c);
 	this.mPaint = mPaint;
 	context=c;
+	randomGenerator = new Random();
+	SessionId = randomGenerator.nextInt(9999999);
 	mPath = new Path();
 	mBitmapPaint = new Paint(Paint.DITHER_FLAG);	
 	
 	}
+	
 	public void colorChanged(int color) {
 		mPaint.setColor(color);
 		}
@@ -58,7 +67,8 @@ public class DrawView extends View {
 	super.onSizeChanged(w, h, oldw, oldh);
 	mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
 	mCanvas = new Canvas(mBitmap);
-	
+	this.width = w;
+	this.hight = h;
 	}
 	@Override
 	protected void onDraw(Canvas canvas) {
@@ -98,6 +108,7 @@ public class DrawView extends View {
 		param.add(x);
 		param.add(y);
 		param.add(MotionAction);
+		param.add(SessionId);
 		SendNotTask mSendNotTask = new SendNotTask();
 		mSendNotTask.execute(param);
 	}
@@ -113,7 +124,7 @@ public class DrawView extends View {
 				obj.put("action","com.examples.UPDATE_STATUS");
 				obj.put("gameAction","drawAction");
 				obj.put("Motion", (Integer)params[0].get(2));
-	
+				obj.put("SessionId", (Integer)params[0].get(3));
 				ParsePush push = new ParsePush();
 				ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
 	 
@@ -187,6 +198,10 @@ public class DrawView extends View {
 	    		draw.put("y", arry);
 	    		draw.put("Motion", arrM);
 	    		draw.put("OrderId", orderid);
+	    		draw.put("Width", this.width);
+	    		draw.put("Hight", this.hight);
+	    		draw.put("SessionId",SessionId);
+	    		draw.put("Color", this.mPaint.getColor());
 	    		draw.saveInBackground();
 	    		sendNotification(x,y,MotionEvent.ACTION_UP);
 	    	}
@@ -201,7 +216,7 @@ public class DrawView extends View {
 	return true;
 	}  
 	
-	public void draw(){
+	public void drawJson(int SessionId){
 		
 		long downTime;
 		long eventTime;
@@ -209,6 +224,14 @@ public class DrawView extends View {
 		int maction;
 		float x;
 		float y;
+		
+		int color = 0;
+		
+		float xfactor = 1;
+		float yfactor = 1;
+		
+		int originalWidth = 0;
+		int originalHight = 0;
 		
 		List<Double> arrx = new ArrayList<Double>();
 		List<Double> arry = new ArrayList<Double>();
@@ -218,6 +241,7 @@ public class DrawView extends View {
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Draws");
 		query.whereEqualTo("Player",  FndGameActivity.getSharedApplication().mWaitPlayers);
 		query.whereEqualTo("OrderId", orderid);
+		query.whereEqualTo("SessionId", SessionId);
 		try {
 			mDrawObject = query.getFirst();
 		} catch (ParseException e) {
@@ -232,7 +256,26 @@ public class DrawView extends View {
 			arrx = mDrawObject.getList("x");
 			arry = mDrawObject.getList("y");
 			arrM = mDrawObject.getList("Motion");
+			originalWidth = mDrawObject.getInt("Width");
+			originalHight = mDrawObject.getInt("Hight");
+			color = mDrawObject.getInt("Color");
 		}
+			
+		if (originalWidth != this.width)
+		{
+			xfactor = (float) this.width/ (float) originalWidth;
+		}
+		
+		if (originalHight != this.hight)
+		{
+			yfactor = (float)this.hight/(float)originalHight;
+		}
+		
+		if (this.mPaint.getColor() != color)
+		{
+			this.mPaint.setColor(color);
+		}
+		
 		
 		for (int i=0; i < arrx.size();i++)
 		{
@@ -241,8 +284,8 @@ public class DrawView extends View {
 		    eventTime = SystemClock.uptimeMillis() + 100;
 		    metaState = 0;
 		    maction = arrM.get(i);
-		    x =  (float) arrx.get(i).doubleValue();
-		    y = (float) arry.get(i).doubleValue();  
+		    x =  (float) arrx.get(i).doubleValue() * xfactor;
+		    y = (float) arry.get(i).doubleValue() * yfactor;  
 			MotionEvent me =  MotionEvent.obtain(downTime, eventTime, maction, x, y, metaState);
 			this.onTouchEvent(me);
 			me.recycle();
