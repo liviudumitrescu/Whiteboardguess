@@ -172,7 +172,7 @@ public class DrawView extends View {
 	    	{
 	    		arrx.add(x);
 	    		arry.add(y);
-	    		arrM.add(MotionEvent.ACTION_DOWN);
+	    		arrM.add(MotionEvent.ACTION_MOVE);
 	    	}
 	        touch_move(x, y);
 	        invalidate();
@@ -203,6 +203,17 @@ public class DrawView extends View {
 	
 	public void draw(){
 		
+		long downTime;
+		long eventTime;
+		int metaState;
+		int maction;
+		float x;
+		float y;
+		
+		List<Double> arrx = new ArrayList<Double>();
+		List<Double> arry = new ArrayList<Double>();
+		List<Integer> arrM = new ArrayList<Integer>();
+		
 		ParseObject mDrawObject = null;
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Draws");
 		query.whereEqualTo("Player",  FndGameActivity.getSharedApplication().mWaitPlayers);
@@ -225,16 +236,24 @@ public class DrawView extends View {
 		
 		for (int i=0; i < arrx.size();i++)
 		{
-			long downTime = SystemClock.uptimeMillis();
-		    long eventTime = SystemClock.uptimeMillis() + 100;
-		    int metaState = 0;
-		    int maction = arrM.get(i);
-		    float x = (float)arrx.get(i);
-		    float y = (float)arry.get(i);  
+			try {
+			downTime = SystemClock.uptimeMillis();
+		    eventTime = SystemClock.uptimeMillis() + 100;
+		    metaState = 0;
+		    maction = arrM.get(i);
+		    x =  (float) arrx.get(i).doubleValue();
+		    y = (float) arry.get(i).doubleValue();  
 			MotionEvent me =  MotionEvent.obtain(downTime, eventTime, maction, x, y, metaState);
 			this.onTouchEvent(me);
 			me.recycle();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
+		touch_up();
+        invalidate();		
 	}
 }
 
