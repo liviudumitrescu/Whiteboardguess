@@ -40,17 +40,20 @@ public class DrawView extends View {
 	private int SessionId;
 	Random randomGenerator;
 	Context context;
-   
+	Xfermode defaultX;
+    int defaultAlpha;
 	List<Float> arrx = new ArrayList<Float>();
 	List<Float> arry = new ArrayList<Float>();
 	List<Integer> arrM = new ArrayList<Integer>();
-	
+	int fromJson = 0;
 	
 	
 	public DrawView(Context c, Paint mPaint) {
 		
 	super(c);
 	this.mPaint = mPaint;
+	defaultX = this.mPaint.getXfermode();
+	defaultAlpha = this.mPaint.getAlpha();
 	context=c;
 	randomGenerator = new Random();
 	SessionId = randomGenerator.nextInt(9999999);
@@ -59,9 +62,6 @@ public class DrawView extends View {
 	
 	}
 	
-	public void colorChanged(int color) {
-		mPaint.setColor(color);
-		}
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 	super.onSizeChanged(w, h, oldw, oldh);
@@ -159,6 +159,10 @@ public class DrawView extends View {
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+		
+		if (this.ShouldSendNot == 0 && fromJson == 0)
+			return true;
+		
 	float x = event.getX();
 	float y = event.getY();
 	
@@ -202,6 +206,17 @@ public class DrawView extends View {
 	    		draw.put("Hight", this.hight);
 	    		draw.put("SessionId",SessionId);
 	    		draw.put("Color", this.mPaint.getColor());
+	    		
+	    		if (this.mPaint.getXfermode() != defaultX){
+	    			if (this.mPaint.getXfermode().equals(new PorterDuffXfermode(PorterDuff.Mode.CLEAR)))
+		    		{
+		    			draw.put("isClear", 1);
+		    		}
+	    		}	    		
+	    		else
+	    		{
+	    			draw.put("isClear", 0);
+	    		}
 	    		draw.saveInBackground();
 	    		sendNotification(x,y,MotionEvent.ACTION_UP);
 	    	}
@@ -229,6 +244,9 @@ public class DrawView extends View {
 		
 		float xfactor = 1;
 		float yfactor = 1;
+		
+		int isClear = 0;
+		
 		
 		int originalWidth = 0;
 		int originalHight = 0;
@@ -259,6 +277,7 @@ public class DrawView extends View {
 			originalWidth = mDrawObject.getInt("Width");
 			originalHight = mDrawObject.getInt("Hight");
 			color = mDrawObject.getInt("Color");
+			isClear = mDrawObject.getInt("isClear");
 		}
 			
 		if (originalWidth != this.width)
@@ -269,6 +288,16 @@ public class DrawView extends View {
 		if (originalHight != this.hight)
 		{
 			yfactor = (float)this.hight/(float)originalHight;
+		}
+		
+		
+		if (isClear == 1)
+		{
+			this.mPaint.setColor(Color.WHITE);
+		}
+		else if (isClear == 0 && this.mPaint.getColor() != color)
+		{
+			this.mPaint.setColor(color);
 		}
 		
 		if (this.mPaint.getColor() != color)
@@ -287,7 +316,9 @@ public class DrawView extends View {
 		    x =  (float) arrx.get(i).doubleValue() * xfactor;
 		    y = (float) arry.get(i).doubleValue() * yfactor;  
 			MotionEvent me =  MotionEvent.obtain(downTime, eventTime, maction, x, y, metaState);
+			fromJson = 1;
 			this.onTouchEvent(me);
+			fromJson = 0;
 			me.recycle();
 			}
 			catch (Exception e)
@@ -296,7 +327,8 @@ public class DrawView extends View {
 			}
 		}
 		touch_up();
-        invalidate();		
+        invalidate();
+        
 	}
 }
 

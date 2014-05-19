@@ -7,6 +7,6 @@
     <string name="title_activity_game_lobby">Game Lobby</string>
     <string name="title_activity_wi_fi">WiFiActivity</string>
     <string name="title_activity_find_game">FindGame</string>
-    <string name="title_activity_fnd_game">FndGameActivity</string>
+    <string name="title_activity_fnd_game">Find Game</string>
 
 </resources>

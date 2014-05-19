@@ -44,6 +44,7 @@ public class FndGameActivity extends Activity {
 	public String mWaitPlayers;
 	ParseInstallation installation;
 	ParseObject Games;
+	Intent intent;
 	
 	 private static FndGameActivity _FndGameActivity;
 		
@@ -70,7 +71,7 @@ public class FndGameActivity extends Activity {
 		mWaitPlayers="";
 		installation = ParseInstallation.getCurrentInstallation();
 		Games = parseDB.getGame(installation);
-		
+		intent = new Intent(FndGameActivity.this, MainActivity.class);
 		
 		
 		for (Map.Entry<String, ParseUser> e : waitingPlayers.entrySet()) {
@@ -193,10 +194,9 @@ public class FndGameActivity extends Activity {
 		@Override
 		protected void onPostExecute(final Boolean success) {
 			mWaitPlayerTask = null;
-			showProgress(false);
+			//showProgress(false);
 			
-			if (success) {
-				Intent intent = new Intent(FndGameActivity.this, MainActivity.class);
+			if (success) {	
 				startActivity(intent);
 			} else {
 				//TODO

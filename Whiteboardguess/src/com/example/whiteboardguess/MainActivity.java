@@ -25,13 +25,14 @@ public class MainActivity extends Activity implements ColorPickerDialog.OnColorC
 	AlertDialog dialog;
 	private static final int COLOR_MENU_ID = Menu.FIRST;	
 	private static final int ERASE_MENU_ID = Menu.FIRST + 1;
-	private Paint   mPaint;
+	public Paint   mPaint;
 	ParseObject games;
 	ParseDB parseDB;
 	public String gameStatus;
 	ParseInstallation installation;
 	public ParseUser user;
-	
+	Xfermode defaultX;
+    int defaultAlpha;
 	
 	private static MainActivity _MainActivity;
 	
@@ -59,11 +60,16 @@ public class MainActivity extends Activity implements ColorPickerDialog.OnColorC
 		mPaint.setStrokeJoin(Paint.Join.ROUND);
 		mPaint.setStrokeCap(Paint.Cap.ROUND);
 		mPaint.setStrokeWidth(20);
+		
 		super.onCreate(savedInstanceState);
 	    dv = new DrawView(this, this.mPaint);
 	    dv.setDrawingCacheEnabled(true);
 	    setContentView(dv);
+	    defaultX = this.mPaint.getXfermode();
+		defaultAlpha = this.mPaint.getAlpha();
 	    _MainActivity = this;
+	    
+	    
 	    gameStatus = games.get("Status").toString();
 	    
 	    
@@ -96,11 +102,14 @@ public class MainActivity extends Activity implements ColorPickerDialog.OnColorC
 	    	games.put("Status", FndGameActivity.getSharedApplication().mWaitPlayers);
 	    	games.put("Installation", installation);
 	    	games.saveInBackground();
+	    	dv.ShouldSendNot = 0;
 		}
 	    
 	}
 	public void colorChanged(int color) {
 		mPaint.setColor(color);
+		mPaint.setXfermode(defaultX);
+		mPaint.setAlpha(defaultAlpha);
 		}
 	
 	@Override

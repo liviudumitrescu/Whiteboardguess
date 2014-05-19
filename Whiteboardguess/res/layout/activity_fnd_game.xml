@@ -15,7 +15,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center_horizontal"
-        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+     	android:layout_centerVertical="true"
+     	android:orientation="vertical"
         android:visibility="gone" >
 
         <ProgressBar
@@ -46,7 +48,7 @@
     <ListView
         android:id="@+id/activeGamesList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" >
 

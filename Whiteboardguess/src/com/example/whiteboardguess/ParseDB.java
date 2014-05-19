@@ -61,11 +61,12 @@ public class ParseDB {
 		
 		try {
 			mScoreList = query.find();
-		} catch (ParseException e) {
+			pUser = mScoreList.get(0);
+		} catch (Exception e) {
 			
 			e.printStackTrace();
 		}
-		pUser = mScoreList.get(0);
+		
 		return pUser;
 	}
 }
